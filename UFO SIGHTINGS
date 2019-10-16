@@ -1,0 +1,147 @@
+UFO Sightings
+The objective of this assignment is for you to explain what is happening in each cell in clear, understandable language.
+There is no need to code. The code is there for you, and it already runs. Your task is only to explain what each line in each cell does.
+The placeholder cells should describe what happens in the cell below it.
+
+Example: The cell below imports pandas as a dependency because pandas functions will be used throughout the program, such as the Pandas DataFrame as well as the read_csv function.
+In [ ]:
+
+
+import pandas as pd
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below.]
+The placeholder cells should describe what happens in the cell below it."
+In [ ]:
+
+
+csv_path = "Resources/ufoSightings.csv"
+​
+ufo_df = pd.read_csv(csv_path)
+​
+ufo_df.head()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Explain why doing a count of values could be helpful.]
+Pandas Index.value_counts() function returns object containing counts of unique values. The resulting object will be in descending order so that the first element is the most frequently-occurring element
+In [ ]:
+
+
+ufo_df.count()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. What are some pros and cons of using any versus all as the parameter for how in the dropna() function?]
+The dropna() function is used to remove a row or a column from a dataframe which has a NaN or no values in it. Egs : The fillna() function is used to fill the the missing or NaN values in the pandas dataframe with a suitable data as decided by the user.Pandas is one of those packages and makes importing and analyzing data much easier. Pandas any() method is applicable both on Series and Dataframe. It checks whether any value in the caller object (Dataframe or series) is not 0 and returns True for that. If all values are 0, it will return False. takes the position that all() and any() on empty lists should serve as sane base-cases for their respective reduction operators, and therefore all() is true and any() is false.
+In [ ]:
+
+
+clean_ufo_df = ufo_df.dropna(how="any")
+clean_ufo_df.count()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Be sure to describe what defining a list of columns and using that as the second parameter in the loc function does. Also, which filter was applied and how as well as the expected outcome of applying the filter.]
+DataFrame.loc[] method is a method that takes only index labels and returns row or dataframe if the index label exists in the caller data frame. Selecting single or multiple rows using .loc index selections with pandas. Note that the first example returns a series, and the second returns a DataFrame. You can achieve a single-column DataFrame by passing a single-element list to the .loc operation. Select columns with .loc using the names of the columns.
+In [ ]:
+
+
+columns = [
+    "datetime",
+    "city",
+    "state",
+    "country",
+    "shape",
+    "duration (seconds)",
+    "duration (hours/min)",
+    "comments",
+    "date posted"
+]
+​
+usa_ufo_df = clean_ufo_df.loc[clean_ufo_df["country"] == "us", columns]
+usa_ufo_df.head()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Be sure to describe what value_counts does as well as why this can be practical. Also, describe what will this return.]
+Pandas is one of those packages and makes importing and analyzing data much easier. Pandas Index.value_counts() function returns object containing counts of unique values. The resulting object will be in descending order so that the first element is the most frequently-occurring element. Excludes NA values by default.
+In [ ]:
+
+
+state_counts = usa_ufo_df["state"].value_counts()
+state_counts
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Be sure to describe what is the data type of state_counts and why. Explain why is this step necessary for continuing your analysis.]
+This definition explains what data types are and how they are used to ... A string, for example, is a data type that is used to classify text and an integer is ... are other classes whose values are not marked with their class until run-time. It gives the specific on the state details information we are looking for. 
+In [ ]:
+
+
+state_ufo_counts_df = pd.DataFrame(state_counts)
+state_ufo_counts_df.head()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Explain what is being manipulated here, and why would this be more user-friendly to do.]
+The cell below will be able to specifically show all the state where there were UFO sightings.
+In [ ]:
+
+
+state_ufo_counts_df = state_ufo_counts_df.rename(
+    columns={"state": "Sum of Sightings"})
+state_ufo_counts_df.head()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Explain what is happening by calling looking at the dtypes property and why this can be helpful.]
+Pandas DataFrame.dtypes attribute return the dtypes in the DataFrame. It returns a Series with the data type of each column.
+In [ ]:
+
+
+usa_ufo_df.dtypes
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. Be sure to explain why this step is necessary, and what will you now be able to do as a result of performing this step.]
+The step below specifically show where and how long (ie how many seconds a sighting UFO took place.
+In [ ]:
+
+
+usa_ufo_df.loc[:, "duration (seconds)"] = usa_ufo_df["duration (seconds)"].astype("float")
+usa_ufo_df.dtypes
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. What is the output and how were we able to accomplish this?]
+The cell below will specically tells us how many second the UFO sigthing too place, furthermore it will give us the sum of where it took place by state. 
+In [ ]:
+
+
+# Now it is possible to find the sum of seconds
+usa_ufo_df["duration (seconds)"].sum()
+
+
+
+
+[Replace this with your clear explanation of what happens in the cell below. How did we group by two columns, and what are we now able to do as a result? Lastly, explain what does this output tell you.]
+The groupe code will groupe all the areas by cityt and states where the sighting took place. 
+In [ ]:
+
+
+grouped_data = usa_ufo_df.groupby(['state', 'city'])
+​
+# Hint: If you are counting records, you can use any column and get the same result. Try it.
+grouped_data['datetime'].count()
