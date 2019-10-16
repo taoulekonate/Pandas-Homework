@@ -1,0 +1,219 @@
+
+
+
+ 
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Note\n",
+    "* Instructions have been included for each segment. You do not have to follow them exactly, but they are included to help you think through the steps."
+ 
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Dependencies and Setup\n",
+    "import pandas as pd\n",
+
+    "# File to Load (Remember to Change These)\n",
+    "file_to_load = \"Resources/purchase_data.csv\"\n",
+   
+    "# Read Purchasing File and store into Pandas data frame\n",
+    "purchase_data = pd.read_csv(file_to_load)"
+  
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Player Count"
+ 
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Display the total number of players\n"
+  
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {},
+   "outputs": [
+  
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+ 
+     
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "
+  
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+   
+      "text/plain": 
+       "   Total Players\n",
+       "0            576"
+   
+     "execution_count": 62,
+     "metadata": {},
+     "output_type": "execute_result"
+   
+   "source": 
+    "total_players = purchase_data[\"SN\"].drop_duplicates()\n",
+    "total_players = total_players.count()\n",
+    "total_players\n",
+    "pd.DataFrame({'Total Players': [total_players]})"
+  
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Purchasing Analysis (Total)"
+
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Run basic calculations to obtain number of unique items, average price, etc.\n",
+   
+    "* Create a summary data frame to hold the results\n",
+   
+    "* Optional: give the displayed data cleaner formatting\n",
+  
+    "* Display the summary data frame\n"
+
+   "cell_type": "code",
+   "execution_count": 63,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "unique = purchase_data[\"Item Name\"].nunique()\n",
+    "avg_price = round(purchase_data[\"Price\"].mean(),2)\n",
+    "purchase_num = purchase_data[\"Purchase ID\"].count()\n",
+    "total_rev = purchase_data[\"Price\"].sum()"
+  
+   "cell_type": "code",
+   "execution_count": 64,
+   "metadata": {},
+   "outputs": [
+    
+     "data": {
+      "text/html": [
+     
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+     
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+      
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+     
+       "<table border=\"1\" class=\"dataframe\">\n",
+    
+      "text/plain": [
+       "  Average Price  Number of Unique Items  Total Purchases Total Revenue\n",
+       "0         $3.05                     179              780     $2,379.77"
+      
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+   
+   "source": [
+    "df = pd.DataFrame([{\"Number of Unique Items\": unique, \"Average Price\": avg_price, \"Total Purchases\": purchase_num, \"Total Revenue\": total_rev}])\n",
+    "df['Average Price'] = df['Average Price'].map('${:,.2f}'.format)\n",
+    "df['Total Revenue'] = df['Total Revenue'].map('${:,.2f}'.format)\n",
+    "df"
+ 
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Gender Demographics"
+
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Percentage and Count of Male Players\n",
+   
+    "* Percentage and Count of Female Players\n",
+    "* Percentage and Count of Other / Non-Disclosed\n",
+
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {},
+   "outputs": [
+    
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+     
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+  
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+      "text/plain": [
+       "                       Player Count  Percent of Players\n",
+       "Gender                                                 \n",
+       "Female                          113               19.62\n",
+       "Male                            652              113.19\n",
+       "Other / Non-Disclosed            15                2.60"
+ 
+     "execution_count": 65,
+     "metadata": {},
+     "output_type": "execute_result"
+  
+   "source": [
+    "gender_groups = purchase_data.groupby([\"Gender\"])\n",
+    "percent_any_gender = round((gender_groups[\"SN\"].count() / total_players) *100, 2)\n",
+    "\n",
+    "gender_df = pd.DataFrame({\"Player Count\": gender_groups[\"SN\"].count(), \"Percent of Players\": percent_any_gender})\n",
+    "\n",
+    "gender_df"
+ 
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Purchasing Analysis (Gender)"
+
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Run basic calculations to obtain purchase count, avg. purchase price, avg. purchase total per person etc. by gender\n",
+   
+    "* Create a summary data frame to hold the results\n",
+ 
+    "* Optional: give the displayed data cleaner formatting\n",
+    
+    "* Display the summary data frame"
+
+   "cell_type": "code",
+   "execution_count": 66,
+   "metadata": {},
+   "outputs": [
+           "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+     
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+     
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+     
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+  
+
+
+
+
+
